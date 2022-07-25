@@ -1,7 +1,14 @@
 let attackPlayer;
 let attackEnemy;
+let playerLifes = 3;
+let enemyLifes = 3;
 
 function initGame() {
+  let sectionSelectAttack = document.getElementById("select-attack");
+  sectionSelectAttack.style.display = "none";
+  let sectionRestart = document.getElementById("restart");
+  sectionRestart.style.display = "none";
+
   let btnPetPlayer = document.getElementById("btn-pet");
   btnPetPlayer.addEventListener("click", selectPetPlayer);
 
@@ -11,9 +18,18 @@ function initGame() {
   btnWater.addEventListener("click", attackWater);
   let btnEarth = document.getElementById("btn-earth");
   btnEarth.addEventListener("click", attackEarth);
+
+  let btnRestart = document.getElementById("btn-restart");
+  btnRestart.addEventListener("click", restartGame);
 }
 
 function selectPetPlayer() {
+  let sectionSelectPet = document.getElementById("select-pet");
+  sectionSelectPet.style.display = "none";
+
+  let sectionSelectAttack = document.getElementById("select-attack");
+  sectionSelectAttack.style.display = "block";
+
   let inputHipodoge = document.getElementById("hipodoge");
   let inputCapipepo = document.getElementById("capipepo");
   let inputRatigueya = document.getElementById("ratigueya");
@@ -72,6 +88,43 @@ function attackRandomEnemy() {
   combat();
 }
 
+function combat() {
+  let spanLifePlayer = document.getElementById("lifePlayer");
+  let spanLifeEnemy = document.getElementById("lifeEnemy");
+
+  if (attackEnemy == attackPlayer) {
+    createMessage("EMPATE");
+  } else if (attackPlayer == "FUEGO" && attackEnemy == "TIERRA") {
+    createMessage("GANASTE");
+    enemyLifes--;
+    spanLifeEnemy.innerHTML = enemyLifes;
+  } else if (attackPlayer == "AGUA" && attackEnemy == "FUEGO") {
+    createMessage("GANASTE");
+    enemyLifes--;
+    spanLifeEnemy.innerHTML = enemyLifes;
+  } else if (attackPlayer == "TIERRA" && attackEnemy == "AGUA") {
+    createMessage("GANASTE");
+    enemyLifes--;
+    spanLifeEnemy.innerHTML = enemyLifes;
+  } else {
+    createMessage("PERDISTE");
+    playerLifes--;
+    spanLifePlayer.innerHTML = playerLifes;
+  }
+
+  reviewLives()
+
+
+}
+
+function reviewLives() {
+  if (enemyLifes == 0) {
+    messageFinish("FELICITACIONES HAS GANADO EL JUEGO 🥳");
+  } else if (playerLifes == 0) {
+    messageFinish("Lo siento, Perdiste 😭");
+  }
+}
+
 function createMessage(result) {
   let sectionMessage = document.getElementById("messages");
 
@@ -80,18 +133,26 @@ function createMessage(result) {
   sectionMessage.appendChild(message);
 }
 
-function combat() {
-  if (attackEnemy == attackPlayer) {
-    createMessage("EMPATE");
-  } else if (attackPlayer == "FUEGO" && attackEnemy == "TIERRA") {
-    createMessage("GANASTE");
-  } else if (attackPlayer == "AGUA" && attackEnemy == "FUEGO") {
-    createMessage("GANASTE");
-  } else if (attackPlayer == "TIERRA" && attackEnemy == "AGUA") {
-    createMessage("GANASTE");
-  } else {
-    createMessage("PERDISTE");
-  }
+function messageFinish(resultFinish) {
+  let sectionMessage = document.getElementById("messages");
+
+  let message = document.createElement("p");
+  message.innerHTML = resultFinish;
+  sectionMessage.appendChild(message);
+
+  let btnFire = document.getElementById("btn-fire");
+  btnFire.disabled = true;
+  let btnWater = document.getElementById("btn-water");
+  btnWater.disabled = true;
+  let btnEarth = document.getElementById("btn-earth");
+  btnEarth.disabled = true;
+
+  let sectionRestart = document.getElementById("restart");
+  sectionRestart.style.display = "block";
+}
+
+function restartGame() {
+  location.reload();
 }
 
 function random(min, max) {
